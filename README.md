@@ -27,6 +27,4 @@ Application for stores to track their profits!
 - Data created with: [Mockaroo](https://www.mockaroo.com/)
 
  ## How the app looks
-![alt text](https://github.com/PinkFlamingoz/Dashboard-Statistics-App/blob/master/dsa1.png)
-![alt text](https://github.com/PinkFlamingoz/Dashboard-Statistics-App/blob/master/dsa2.png)
-![alt text](https://github.com/PinkFlamingoz/Dashboard-Statistics-App/blob/master/dsa3.png)
+[!textalt](https://github.com/PinkFlamingoz/Dashboard_Store_App/blob/master/Dashboard%202023-08-06%2019-20-54.mp4)
