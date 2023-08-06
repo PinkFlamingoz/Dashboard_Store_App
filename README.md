@@ -24,7 +24,7 @@ Application for stores to track their profits!
 
  ## Database
 - `NOTE: Database has data up to 2026`
-- `Data created with: [Mockaroo](https://www.mockaroo.com/)`
+- Data created with: [Mockaroo](https://www.mockaroo.com/)
 
  ## How the app looks
 ![alt text](https://github.com/PinkFlamingoz/Dashboard-Statistics-App/blob/master/dsa1.png)
