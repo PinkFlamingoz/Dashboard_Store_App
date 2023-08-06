@@ -20,6 +20,7 @@ Application for stores to track their profits!
 - Presentation of detailed statistics.
 - Fancy count up animation.
 - Quick and easy swap between the days and months.
+- Comparison between previous dates.
 - Custom date pick.
 
  ## Database
@@ -27,6 +28,4 @@ Application for stores to track their profits!
 - Data created with: [Mockaroo](https://www.mockaroo.com/)
 
  ## How the app looks
-![alt text](https://github.com/PinkFlamingoz/Dashboard-Statistics-App/blob/master/dsa1.png)
-![alt text](https://github.com/PinkFlamingoz/Dashboard-Statistics-App/blob/master/dsa2.png)
-![alt text](https://github.com/PinkFlamingoz/Dashboard-Statistics-App/blob/master/dsa3.png)
+![](https://github.com/PinkFlamingoz/Dashboard_Store_App/blob/master/Dashboard.gif)
