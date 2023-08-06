@@ -20,6 +20,7 @@ Application for stores to track their profits!
 - Presentation of detailed statistics.
 - Fancy count up animation.
 - Quick and easy swap between the days and months.
+- Comparison between previous dates.
 - Custom date pick.
 
  ## Database
