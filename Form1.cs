@@ -1,6 +1,7 @@
 using Dashboard_Store_App.Models;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Dashboard_Store_App
 {
@@ -13,10 +14,13 @@ namespace Dashboard_Store_App
         // Variables
 
         // Keeping track of the last clicked button
-        private Button clicked_button;
+        private Button? clicked_button;
 
         // Number of days selected for the date range
         private int date_range;
+
+        // This dictionary holds active timers for each label. It ensures that only one timer runs per label.
+        private static readonly Dictionary<Label, System.Windows.Forms.Timer> active_timers = new();
 
         // Constructor
         public Form1()
@@ -107,9 +111,9 @@ namespace Dashboard_Store_App
                                              Double.PositiveInfinity;
 
                     // Updating the labels for the previous period
-                    label_previous_orders_number.Text = $"{orders_change}%";
-                    label_previous_total_revenue_number.Text = $"{revenue_change}%";
-                    label_previous_total_profit_number.Text = $"{profit_change}%";
+                    Animate_Counting(label_previous_orders_number, orders_change, "", "%");
+                    Animate_Counting(label_previous_total_revenue_number, revenue_change, "", "%");
+                    Animate_Counting(label_previous_total_profit_number, profit_change, "", "%");
 
                     Enable_Buttons();
 
@@ -155,52 +159,101 @@ namespace Dashboard_Store_App
             button_today.Enabled = true;
         }
 
-        // Animate the count effect
-        private static void Animate_Counting(Label label, int target_number, string prefix = "", string postfix = "", int total_time_in_seconds = 3)
+        // This method animates the counting effect on a given label.
+        private static void Animate_Counting(Label label, double target_number, string prefix = "", string postfix = "", int total_time_in_seconds = 5, int decimal_places = 2)
+
         {
-            double current_number = 0;
+            // If there's already a running timer for this label, stop it.
+            // This ensures that there's no overlapping animation for the same label.
+            if (active_timers.TryGetValue(label, out var existing_timer))
+            {
+                existing_timer.Stop();
+                existing_timer.Dispose();
+                active_timers.Remove(label);
+            }
+
+            // Extract the numerical portion from the label's text and try to parse it.
+            var numeric_label_content = label.Text;
+
+            if (!string.IsNullOrEmpty(prefix))
+            {
+                numeric_label_content = numeric_label_content.Replace(prefix, "");
+            }
+
+            if (!string.IsNullOrEmpty(postfix))
+            {
+                numeric_label_content = numeric_label_content.Replace(postfix, "");
+            }
+
+            if (!double.TryParse(numeric_label_content, out double current_number))
+            {
+                current_number = 0; // If parsing fails, default to 0.
+            }
+
+            // This variable holds the value by which the current_number should be incremented in each timer tick.
             double increment_step;
 
+            // A stopwatch to keep track of the elapsed time since the animation started.
             var stopwatch = Stopwatch.StartNew();
-            var lock_object = new object();
 
-            // Create timer instance
+            // Define a timer that will be used to update the label's value at regular intervals.
             var timer = new System.Windows.Forms.Timer
             {
-                Interval = 10 // With an interval of 10ms
+                Interval = 10 // The timer will tick every 10 milliseconds.
             };
 
-            // Event handler for timer tick
+            // This event gets triggered every time the timer 'ticks' (every 10 milliseconds in our case).
             timer.Tick += (s, e) =>
             {
-                // lock to ensure only one instance of the timer's Tick event is running at a time
-                lock (lock_object)
+                // Calculate the elapsed time since the start of the animation.
+                var elapsed = stopwatch.Elapsed.TotalSeconds;
+
+                // Determine the direction (positive or negative)
+                bool is_positive_direction = target_number > current_number;
+
+                // Adjust the step by which the current number increases based on the remaining time and distance to target.
+                increment_step = Math.Abs(target_number - current_number) / (total_time_in_seconds - elapsed);
+
+                // Introduce a slowdown effect when 80% of the total animation time has passed.
+                if (elapsed >= total_time_in_seconds * 0.8)
                 {
-                    var elapsed = stopwatch.Elapsed.TotalSeconds;
-                    increment_step = (target_number - current_number) / (total_time_in_seconds - elapsed);
-
-                    // Slowdown effect when 80% of the time has passed
-                    if (elapsed >= total_time_in_seconds * 0.8)
-                    {
-                        increment_step *= 0.99; // Reduce step size
-                    }
-
-                    current_number += increment_step;
-                    if (elapsed >= total_time_in_seconds || current_number >= target_number)
-                    {
-                        // Reached the target number or time, stop the timer
-                        current_number = target_number;
-                        timer.Stop();
-                        stopwatch.Stop();
-                    }
-
-                    // Display the current number in the element
-                    label.Text = $"{prefix}{Math.Round(current_number)}{postfix}";
+                    increment_step *= 0.55; // Slightly reduce the step size to achieve the slowdown effect.
                 }
+
+                // Apply the direction to the increment step.
+                increment_step = is_positive_direction ? increment_step : -increment_step;
+
+                // Increase the current number by the increment step.
+                current_number += increment_step;
+
+                // Check if we've reached our target.
+                bool reached_target = is_positive_direction ? current_number >= target_number : current_number <= target_number;
+
+                // If the entire animation duration has passed or the current number has reached (or exceeded) the target number...
+                if (elapsed >= total_time_in_seconds || reached_target)
+                {
+                    // Set the current number to the exact target number.
+                    current_number = target_number;
+
+                    // Stop the timer as our animation is complete.
+                    timer.Stop();
+
+                    // Dispose the timer
+                    timer.Dispose();
+
+                    // Remove the label's association with the timer since it's no longer active.
+                    active_timers.Remove(label);
+                }
+
+                // Update the label's text to show the current number, formatted with optional prefix and postfix.
+                label.Text = string.Format("{0}{1:N" + decimal_places + "}{2}", prefix, Math.Round(current_number, decimal_places), postfix);
             };
 
-            // Start timer
+            // Start the timer, initiating the animation.
             timer.Start();
+
+            // Associate the label with the active timer, so we can stop it if another animation starts on the same label.
+            active_timers[label] = timer;
         }
 
         // Change the color of the clicked button and revert the color of the previous clicked button.
