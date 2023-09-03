@@ -7,6 +7,9 @@ namespace Dashboard_Store_App
 {
     public partial class Form1 : Form
     {
+        // Constants
+        private const string GITHUB_URL = "https://github.com/PinkFlamingoz";
+
         // The `Dashboard_Model` object holds the data to be displayed in the form.
         // This model object is populated by calling methods that fetch data from a database.
         private readonly Dashboard_Model dashboard_model;
@@ -501,12 +504,19 @@ namespace Dashboard_Store_App
         // Link myself
         private void LinkLabel_Me_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ProcessStartInfo psi = new()
+            try
             {
-                FileName = "https://github.com/PinkFlamingoz",
-                UseShellExecute = true
-            };
-            Process.Start(psi);
+                ProcessStartInfo psi = new()
+                {
+                    FileName = GITHUB_URL,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}");
+            }
         }
     }
 }
