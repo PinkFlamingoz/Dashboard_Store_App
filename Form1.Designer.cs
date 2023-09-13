@@ -883,7 +883,6 @@
         private Panel panel_total_revenue;
         private Label label_total_revenue_number;
         private Label label_total_revenue;
-        private System.CodeDom.CodeTypeReference chart1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart_gross_revenue;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart_top_products;
         private Panel panel_number_of_customers;
