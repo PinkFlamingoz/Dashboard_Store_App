@@ -782,7 +782,7 @@
             linkLabel_me.TabIndex = 21;
             linkLabel_me.TabStop = true;
             linkLabel_me.Text = "Made by Hristijan Stavrov";
-            linkLabel_me.LinkClicked += LinkLabel_Me_LinkClicked;
+            linkLabel_me.LinkClicked += Link_Label_Me_Link_Clicked;
             // 
             // label_heart
             // 

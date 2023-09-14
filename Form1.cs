@@ -502,7 +502,7 @@ namespace Dashboard_Store_App
         }
 
         // Link myself
-        private void LinkLabel_Me_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void Link_Label_Me_Link_Clicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             try
             {
